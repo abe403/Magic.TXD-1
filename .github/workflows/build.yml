@@ -40,17 +40,33 @@ jobs:
       - name: Set up MSBuild
         uses: microsoft/setup-msbuild@v2
 
+      # The newest MSVC (14.4x) rejects a C++20 concept check in
+      # vendor/eirrepo/sdk/Map.h, so prefer the VS2019 toolset (v142,
+      # MSVC 14.29) when the runner has it, and fall back to v143.
+      - name: Pick MSVC toolset
+        id: toolset
+        shell: pwsh
+        run: |
+          $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          Write-Host "Visual Studio: $vs"
+          Write-Host "Installed MSVC versions:"
+          Get-ChildItem "$vs\VC\Tools\MSVC" | ForEach-Object { Write-Host "  $($_.Name)" }
+          $toolsets = Get-ChildItem "$vs\MSBuild\Microsoft\VC\*\Platforms\x64\PlatformToolsets" -Directory | Select-Object -ExpandProperty Name -Unique
+          Write-Host "Platform toolsets: $($toolsets -join ', ')"
+          $pick = if ($toolsets -contains 'v142') { 'v142' } else { 'v143' }
+          Write-Host "Using $pick"
+          "name=$pick" >> $env:GITHUB_OUTPUT
+
       # The project's "Use system Qt" option (build/customprops.xml) links the
       # dynamic Qt from <QT_ROOT>\<version>\msvc2019_64 instead of the
-      # from-source static Qt in vendor/Qt5.15. The runner only ships the
-      # VS2022 toolset, so all projects are forced to v143.
+      # from-source static Qt in vendor/Qt5.15.
       - name: Build solution (Release x64)
         shell: pwsh
         run: >
           msbuild build\Magic.sln -m
           /p:Configuration=Release
           /p:Platform=x64
-          /p:PlatformToolset=v143
+          /p:PlatformToolset=${{ steps.toolset.outputs.name }}
           /p:MGTXD_WIN32_SYSTEM_QT=true
           /p:MGTXD_WIN32_SYSTEM_QT_PATH=$env:QT_ROOT
           /p:MGTXD_WIN32_SYSTEM_QT_VERSION=$env:QT_VERSION

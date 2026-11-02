@@ -32,6 +32,8 @@
 #include "Common.h"
 #include "Codec_GTCH.h"
 #include <process.h>
+#include <chrono>
+#include <thread>
 
 #ifdef GT_COMPDEBUGGER
 #include "CompClient.h"
