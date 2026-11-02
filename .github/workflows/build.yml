@@ -64,7 +64,8 @@ jobs:
           Get-ChildItem $out
           Copy-Item resources, languages, data -Destination $out -Recurse -Force
           # libpng is built as a DLL and is loaded by magictxd_x64.exe at startup.
-          Copy-Item vendor/libpng/bin/x64/Release/libpng.dll -Destination $out -Force
+          Get-ChildItem vendor/libpng -Recurse -Filter libpng.dll | Where-Object FullName -match "x64" | Select-Object -First 1 | Copy-Item -Destination $out -Force
+          if (-not (Test-Path "$out/libpng.dll")) { Write-Warning "libpng.dll not found (libpng may be linked statically)" }
           & "$env:QT_ROOT\$env:QT_VERSION\msvc2019_64\bin\windeployqt.exe" --release --no-translations "$out\magictxd_x64.exe"
           Get-ChildItem $out -Recurse -Include *.pdb, *.lib, *.exp, *.ipdb, *.iobj | Remove-Item -Force
 
