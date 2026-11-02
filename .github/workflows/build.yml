@@ -51,7 +51,7 @@ jobs:
           Write-Host "Visual Studio: $vs"
           Write-Host "Installed MSVC versions:"
           Get-ChildItem "$vs\VC\Tools\MSVC" | ForEach-Object { Write-Host "  $($_.Name)" }
-          $toolsets = Get-ChildItem "$vs\MSBuild\Microsoft\VC\*\Platforms\x64\PlatformToolsets" -Directory | Select-Object -ExpandProperty Name -Unique
+          $toolsets = Get-ChildItem "$vs\MSBuild\Microsoft\VC\*\Platforms\x64\PlatformToolsets\*" -Directory | Select-Object -ExpandProperty Name -Unique
           Write-Host "Platform toolsets: $($toolsets -join ', ')"
           $pick = if ($toolsets -contains 'v142') { 'v142' } else { 'v143' }
           Write-Host "Using $pick"
