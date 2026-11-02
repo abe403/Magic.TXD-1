@@ -1,0 +1,74 @@
+name: Build Magic.TXD (prebuilt Qt)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+env:
+  QT_VERSION: 5.15.2
+  QT_ROOT: C:\Qt
+
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 120
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python (for aqtinstall)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Cache Qt
+        id: qt-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.QT_ROOT }}\${{ env.QT_VERSION }}
+          key: qt-${{ env.QT_VERSION }}-win64_msvc2019_64
+
+      - name: Install prebuilt Qt
+        if: steps.qt-cache.outputs.cache-hit != 'true'
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade aqtinstall
+          python -m aqt install-qt windows desktop $env:QT_VERSION win64_msvc2019_64 -O $env:QT_ROOT
+
+      - name: Set up MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      # The project's "Use system Qt" option (build/customprops.xml) links the
+      # dynamic Qt from <QT_ROOT>\<version>\msvc2019_64 instead of the
+      # from-source static Qt in vendor/Qt5.15. The runner only ships the
+      # VS2022 toolset, so all projects are forced to v143.
+      - name: Build solution (Release x64)
+        shell: pwsh
+        run: >
+          msbuild build\Magic.sln -m
+          /p:Configuration=Release
+          /p:Platform=x64
+          /p:PlatformToolset=v143
+          /p:MGTXD_WIN32_SYSTEM_QT=true
+          /p:MGTXD_WIN32_SYSTEM_QT_PATH=$env:QT_ROOT
+          /p:MGTXD_WIN32_SYSTEM_QT_VERSION=$env:QT_VERSION
+
+      # README "Step 4": the output folder needs resources, languages and data
+      # next to the executable. windeployqt adds the Qt DLLs and plugins.
+      - name: Assemble output folder
+        shell: pwsh
+        run: |
+          $out = "output"
+          Get-ChildItem $out
+          Copy-Item resources, languages, data -Destination $out -Recurse -Force
+          & "$env:QT_ROOT\$env:QT_VERSION\msvc2019_64\bin\windeployqt.exe" --release --no-translations "$out\magictxd_x64.exe"
+          Get-ChildItem $out -Recurse -Include *.pdb, *.lib, *.exp, *.ipdb, *.iobj | Remove-Item -Force
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: magictxd-x64-qt${{ env.QT_VERSION }}
+          path: output
+          if-no-files-found: error
