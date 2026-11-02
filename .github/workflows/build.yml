@@ -40,22 +40,38 @@ jobs:
       - name: Set up MSBuild
         uses: microsoft/setup-msbuild@v2
 
-      # The newest MSVC (14.4x) rejects a C++20 concept check in
-      # vendor/eirrepo/sdk/Map.h, so prefer the VS2019 toolset (v142,
-      # MSVC 14.29) when the runner has it, and fall back to v143.
-      - name: Pick MSVC toolset
+      # The vendored C++20 code only compiles with an early VS2022 compiler:
+      # MSVC 14.44 (runner default) rejects a concept check in
+      # vendor/eirrepo/sdk/Map.h, and MSVC 14.29 (v142) rejects the concepts
+      # in vendor/rwlib. Install an early v143 MSVC side by side (the
+      # upstream repo dates from May 2022, the MSVC 14.31/14.32 era) and
+      # build every project with it.
+      - name: Install early VS2022 MSVC toolset
         id: toolset
         shell: pwsh
         run: |
           $vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
-          Write-Host "Visual Studio: $vs"
+          $installer = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vs_installer.exe"
+          $candidates = @(
+            @{ id = 'Microsoft.VisualStudio.Component.VC.14.32.17.2.x86.x64'; ver = '14.32' },
+            @{ id = 'Microsoft.VisualStudio.Component.VC.14.31.17.1.x86.x64'; ver = '14.31' },
+            @{ id = 'Microsoft.VisualStudio.Component.VC.14.34.17.4.x86.x64'; ver = '14.34' },
+            @{ id = 'Microsoft.VisualStudio.Component.VC.14.36.17.6.x86.x64'; ver = '14.36' },
+            @{ id = 'Microsoft.VisualStudio.Component.VC.14.38.17.8.x86.x64'; ver = '14.38' }
+          )
+          $picked = $null
+          foreach ($c in $candidates) {
+            Write-Host "Trying $($c.id)"
+            $p = Start-Process $installer -ArgumentList @('modify', '--installPath', "`"$vs`"", '--add', $c.id, '--quiet', '--norestart', '--nocache') -Wait -PassThru
+            Write-Host "  installer exit code $($p.ExitCode)"
+            $dir = Get-ChildItem "$vs\VC\Tools\MSVC" -Directory | Where-Object Name -like "$($c.ver).*" | Select-Object -First 1
+            if ($dir) { $picked = $dir.Name; break }
+          }
           Write-Host "Installed MSVC versions:"
           Get-ChildItem "$vs\VC\Tools\MSVC" | ForEach-Object { Write-Host "  $($_.Name)" }
-          $toolsets = Get-ChildItem "$vs\MSBuild\Microsoft\VC\*\Platforms\x64\PlatformToolsets\*" -Directory | Select-Object -ExpandProperty Name -Unique
-          Write-Host "Platform toolsets: $($toolsets -join ', ')"
-          $pick = if ($toolsets -contains 'v142') { 'v142' } else { 'v143' }
-          Write-Host "Using $pick"
-          "name=$pick" >> $env:GITHUB_OUTPUT
+          if (-not $picked) { throw "Could not install an early v143 MSVC toolset" }
+          Write-Host "Using MSVC $picked"
+          "vctools=$picked" >> $env:GITHUB_OUTPUT
 
       # The project's "Use system Qt" option (build/customprops.xml) links the
       # dynamic Qt from <QT_ROOT>\<version>\msvc2019_64 instead of the
@@ -66,7 +82,8 @@ jobs:
           msbuild build\Magic.sln -m
           /p:Configuration=Release
           /p:Platform=x64
-          /p:PlatformToolset=${{ steps.toolset.outputs.name }}
+          /p:PlatformToolset=v143
+          /p:VCToolsVersion=${{ steps.toolset.outputs.vctools }}
           /p:MGTXD_WIN32_SYSTEM_QT=true
           /p:MGTXD_WIN32_SYSTEM_QT_PATH=$env:QT_ROOT
           /p:MGTXD_WIN32_SYSTEM_QT_VERSION=$env:QT_VERSION
