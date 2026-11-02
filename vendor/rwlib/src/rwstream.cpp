@@ -804,7 +804,7 @@ Stream* Interface::CreateStream( eBuiltinStreamType streamType, eStreamMode stre
 
                     if ( rttiObj )
                     {
-                        FileStream *fileStream = (FileStream*)RwTypeSystem::GetObjectFromTypeStruct( rttiObj );
+                        FileStream *fileStream = (FileStream*)GetObjectFromTypeStruct( rttiObj );
 
                         // Give the file handle to the stream.
                         // It will take care of freeing that handle.
@@ -844,7 +844,7 @@ Stream* Interface::CreateStream( eBuiltinStreamType streamType, eStreamMode stre
                         if ( rtObj )
                         {
                             // Success!
-                            FixedBufferMemoryStream *memStream = (FixedBufferMemoryStream*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                            FixedBufferMemoryStream *memStream = (FixedBufferMemoryStream*)GetObjectFromTypeStruct( rtObj );
 
                             outputStream = memStream;
                         }
@@ -862,7 +862,7 @@ Stream* Interface::CreateStream( eBuiltinStreamType streamType, eStreamMode stre
 
                         if ( rtObj )
                         {
-                            DynamicBufferMemoryStream *memStream = (DynamicBufferMemoryStream*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                            DynamicBufferMemoryStream *memStream = (DynamicBufferMemoryStream*)GetObjectFromTypeStruct( rtObj );
 
                             outputStream = memStream;
                         }
@@ -901,7 +901,7 @@ Stream* Interface::CreateStream( eBuiltinStreamType streamType, eStreamMode stre
                             if ( rtObj )
                             {
                                 // We are successful!
-                                CustomStream *customStream = (CustomStream*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                                CustomStream *customStream = (CustomStream*)GetObjectFromTypeStruct( rtObj );
 
                                 // Give the functionality provider to the stream.
                                 customStream->streamProvider = typeProvider->meta_info;

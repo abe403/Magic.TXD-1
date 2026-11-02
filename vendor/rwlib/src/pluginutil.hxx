@@ -90,7 +90,7 @@ private:
     {
         inline void Initialize( GenericRTTI *rtObj )
         {
-            RwObject *rwObj = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+            RwObject *rwObj = (RwObject*)GetObjectFromTypeStruct( rtObj );
 
             EngineInterface *engineInterface = (EngineInterface*)rwObj->engineInterface;
 
@@ -99,7 +99,7 @@ private:
 
         inline void Shutdown( GenericRTTI *rtObj )
         {
-            RwObject *rwObj = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+            RwObject *rwObj = (RwObject*)GetObjectFromTypeStruct( rtObj );
 
             EngineInterface *engineInterface = (EngineInterface*)rwObj->engineInterface;
 

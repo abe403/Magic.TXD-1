@@ -104,7 +104,7 @@ static inline PlatformTexture* CreateNativeTexture( Interface *intf, RwTypeSyste
 
         if ( rtObj )
         {
-            texOut = (PlatformTexture*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+            texOut = (PlatformTexture*)GetObjectFromTypeStruct( rtObj );
         }
     }
     return texOut;
@@ -124,7 +124,7 @@ static inline PlatformTexture* CloneNativeTexture( Interface *intf, const Platfo
 
             if ( dstRtObj )
             {
-                texOut = (PlatformTexture*)RwTypeSystem::GetObjectFromTypeStruct( dstRtObj );
+                texOut = (PlatformTexture*)GetObjectFromTypeStruct( dstRtObj );
             }
         }
     }

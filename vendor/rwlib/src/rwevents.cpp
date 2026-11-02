@@ -43,7 +43,7 @@ struct eventSystemManager
     private:
         static Interface* GetEngineFromGenericObj( GenericRTTI *rtObj )
         {
-            RwObject *rwObj = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+            RwObject *rwObj = (RwObject*)GetObjectFromTypeStruct( rtObj );
 
             return rwObj->engineInterface;
         }
@@ -56,7 +56,7 @@ struct eventSystemManager
 
         inline void Initialize( GenericRTTI *rtObj )
         {
-            RwObject *rwObj = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+            RwObject *rwObj = (RwObject*)GetObjectFromTypeStruct( rtObj );
 
             // We start out with an empty map of events.
             this->evtLock = CreateReadWriteLock( rwObj->engineInterface );
@@ -64,7 +64,7 @@ struct eventSystemManager
 
         inline void Shutdown( GenericRTTI *rtObj )
         {
-            RwObject *rwObj = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+            RwObject *rwObj = (RwObject*)GetObjectFromTypeStruct( rtObj );
 
             // Memory is cleared automatically.
             if ( rwlock *lock = this->evtLock )

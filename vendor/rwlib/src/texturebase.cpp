@@ -248,7 +248,7 @@ TextureBase* CreateTexture( Interface *intf, Raster *texRaster )
 
         if ( rtObj )
         {
-            textureOut = (TextureBase*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+            textureOut = (TextureBase*)GetObjectFromTypeStruct( rtObj );
 
             // Set the raster into the texture.
             textureOut->SetRaster( texRaster );

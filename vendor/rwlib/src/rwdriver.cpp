@@ -822,7 +822,7 @@ Driver* CreateDriver( Interface *intf, const char *typeName )
             if ( rtObj )
             {
                 // Lets return stuff.
-                driverOut = (Driver*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                driverOut = (Driver*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }
@@ -876,7 +876,7 @@ DriverSwapChain* Driver::CreateSwapChain( Window *outputWindow, uint32 frameCoun
 
             if ( rtObj )
             {
-                swapChainOut = (DriverSwapChain*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                swapChainOut = (DriverSwapChain*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }
@@ -963,7 +963,7 @@ DriverGraphicsState* Driver::CreateGraphicsState( const gfxGraphicsState& psoSta
 
             if ( rtObj )
             {
-                psoOut = (DriverGraphicsState*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                psoOut = (DriverGraphicsState*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }
@@ -1024,7 +1024,7 @@ DriverCmdAlloc* Driver::CreateCommandAllocator( eCmdAllocType allocType )
 
             if ( rtObj )
             {
-                cmdAlloc = (DriverCmdAlloc*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                cmdAlloc = (DriverCmdAlloc*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }
@@ -1083,7 +1083,7 @@ DriverCmdBuffer* Driver::CreateCommandBuffer( eCmdBufType bufType, DriverCmdAllo
 
             if ( rtObj )
             {
-                return (DriverCmdBuffer*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                return (DriverCmdBuffer*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }
@@ -1166,7 +1166,7 @@ DriverCmdQueue* Driver::CreateCommandQueue( eCmdBufType queueType, int priority 
 
             if ( rtObj )
             {
-                return (DriverCmdQueue*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                return (DriverCmdQueue*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }
@@ -1241,7 +1241,7 @@ DriverFence* Driver::CreateFence( uint64 initValue )
 
             if ( rtObj )
             {
-                return (DriverFence*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                return (DriverFence*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }
@@ -1276,7 +1276,7 @@ DriverMemory* Driver::AllocateMemory( eDriverMemType memType, size_t numBytes, c
 
             if ( rtObj )
             {
-                return (DriverMemory*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                return (DriverMemory*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }

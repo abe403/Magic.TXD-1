@@ -61,6 +61,13 @@ struct EngineInterface : public Interface
     {
         typedef unfair_mutex rwlock;
 
+        inline typeSystemLockProvider( void ) noexcept = default;
+
+        inline typeSystemLockProvider( EngineInterface *engineInterface ) noexcept
+            : engineInterface( engineInterface )
+        {
+        }
+
         inline rwlock* CreateLock( void )
         {
             return CreateUnfairMutex( engineInterface );
@@ -91,7 +98,7 @@ struct EngineInterface : public Interface
             theLock->leave();
         }
 
-        EngineInterface *engineInterface;
+        EngineInterface *engineInterface = nullptr;
     };
 
 private:
@@ -132,6 +139,25 @@ IMPL_HEAP_REDIR_METH_FREE_RETURN EngineInterface::dtsRedirAlloc::Free IMPL_HEAP_
 }
 
 typedef EngineInterface::RwTypeSystem RwTypeSystem;
+
+AINLINE size_t ResolveTypeStructObjectAlignment( const GenericRTTI *rtObj )
+{
+    RwTypeSystem::typeInfoBase *typeInfo = RwTypeSystem::GetTypeInfoFromTypeStruct( rtObj );
+    RwTypeSystem *typeSys = RwTypeSystem::GetTypeSystemFromTypeInfo( typeInfo );
+    EngineInterface *engineInterface = LIST_GETITEM( EngineInterface, typeSys, typeSystem );
+
+    return typeSys->GetTypeStructAlignment( engineInterface, rtObj );
+}
+
+AINLINE void* GetObjectFromTypeStruct( GenericRTTI *rtObj )
+{
+    return RwTypeSystem::GetObjectFromTypeStruct( rtObj, ResolveTypeStructObjectAlignment( rtObj ) );
+}
+
+AINLINE const void* GetConstObjectFromTypeStruct( const GenericRTTI *rtObj )
+{
+    return RwTypeSystem::GetConstObjectFromTypeStruct( rtObj, ResolveTypeStructObjectAlignment( rtObj ) );
+}
 
 // Use this function if you need a string that describes the currently running RenderWare environment.
 // It uses the application variables of EngineInterface.

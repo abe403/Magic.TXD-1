@@ -52,7 +52,7 @@ Raster* CreateRaster( Interface *intf )
 
             if ( rtObj )
             {
-                Raster *theRaster = (Raster*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                Raster *theRaster = (Raster*)GetObjectFromTypeStruct( rtObj );
 
                 return theRaster;
             }
@@ -85,7 +85,7 @@ Raster* CloneRaster( const Raster *rasterToClone )
 
         if ( clonedRtObj )
         {
-            newRaster = (rw::Raster*)RwTypeSystem::GetObjectFromTypeStruct( clonedRtObj );
+            newRaster = (rw::Raster*)GetObjectFromTypeStruct( clonedRtObj );
         }
     }
 

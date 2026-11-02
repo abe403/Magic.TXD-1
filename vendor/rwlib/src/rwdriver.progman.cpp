@@ -234,7 +234,7 @@ DriverProgram* CompileNativeProgram( Interface *intf, const char *nativeName, co
 
             if ( rtObj )
             {
-                progHandle = (driverProgramHandle*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                progHandle = (driverProgramHandle*)GetObjectFromTypeStruct( rtObj );
             }
 
             if ( progHandle )

@@ -24,7 +24,7 @@ struct rwObjExtensionStore
 
     inline void Initialize( GenericRTTI *rtObj )
     {
-        RwObject *theObject = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+        RwObject *theObject = (RwObject*)GetObjectFromTypeStruct( rtObj );
 
         // Store for the exception system.
         this->rwObj = rwObj;
@@ -38,7 +38,7 @@ struct rwObjExtensionStore
 
     inline void Shutdown( GenericRTTI *rtObj )
     {
-        RwObject *theObject = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+        RwObject *theObject = (RwObject*)GetObjectFromTypeStruct( rtObj );
 
         Interface *engineInterface = theObject->engineInterface;
 

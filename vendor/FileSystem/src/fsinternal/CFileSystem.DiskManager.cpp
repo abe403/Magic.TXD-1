@@ -39,7 +39,7 @@ static inline bool _ExpectString( character_env_iterator_tozero <charType>& iter
 
     const std::locale& classic_loc = std::locale::classic();
 
-    toupper_lookup <character_env <charType>::ucp_t> facet( classic_loc );
+    toupper_lookup <typename character_env <charType>::ucp_t> facet( classic_loc );
 
     while ( true )
     {

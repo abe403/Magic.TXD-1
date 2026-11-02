@@ -75,7 +75,7 @@ Window* MakeWindow( Interface *intf, uint32 clientWidth, uint32 clientHeight )
 
         if ( winObj )
         {
-            windowingSystemWin32::Win32Window *win32Wnd = (windowingSystemWin32::Win32Window*)RwTypeSystem::GetObjectFromTypeStruct( winObj );
+            windowingSystemWin32::Win32Window *win32Wnd = (windowingSystemWin32::Win32Window*)GetObjectFromTypeStruct( winObj );
 
             // The window is fully created.
             // Signal the messaging thread.

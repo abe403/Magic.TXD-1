@@ -330,7 +330,7 @@ NativeImage* CreateNativeImage( Interface *intf, const char *typeName )
                 if ( rtObj )
                 {
                     // Return this amazing new object!
-                    return (NativeImagePrivate*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                    return (NativeImagePrivate*)GetObjectFromTypeStruct( rtObj );
                 }
             }
         }

@@ -378,7 +378,7 @@ RwObject* Interface::DeserializeBlock( BlockProvider& inputProvider )
         }
 
         // Cast to the language part, the RwObject.
-        RwObject *rwObj = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+        RwObject *rwObj = (RwObject*)GetObjectFromTypeStruct( rtObj );
 
         // Make sure we deserialize into the object version of the block.
         rwObj->SetEngineVersion( inputProvider.getBlockVersion() );

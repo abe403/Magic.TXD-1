@@ -120,7 +120,7 @@ typePluginOffset_t RegisterTypePlugin( Interface *rwEngine, const char *typeName
         bool OnPluginConstruct( GenericRTTI *rtobj, RwTypeSystem::pluginOffset_t pluginOff, RwTypeSystem::pluginDescriptor pluginId, EngineInterface *rwEngine ) override
         {
             typePluginDescriptor desc( this->typeName );
-            void *langobj = RwTypeSystem::GetObjectFromTypeStruct( rtobj );
+            void *langobj = GetObjectFromTypeStruct( rtobj );
 
             return this->wrapped->OnPluginConstruct( langobj, pluginOff, desc, rwEngine );
         }
@@ -128,7 +128,7 @@ typePluginOffset_t RegisterTypePlugin( Interface *rwEngine, const char *typeName
         void OnPluginDestruct( GenericRTTI *rtobj, RwTypeSystem::pluginOffset_t pluginOff, RwTypeSystem::pluginDescriptor pluginId, EngineInterface *rwEngine ) override
         {
             typePluginDescriptor desc( this->typeName );
-            void *langobj = RwTypeSystem::GetObjectFromTypeStruct( rtobj );
+            void *langobj = GetObjectFromTypeStruct( rtobj );
 
             this->wrapped->OnPluginDestruct( langobj, pluginOff, desc, rwEngine );
         }
@@ -136,8 +136,8 @@ typePluginOffset_t RegisterTypePlugin( Interface *rwEngine, const char *typeName
         bool OnPluginAssign( GenericRTTI *dstRtobj, const GenericRTTI *srcRtobj, RwTypeSystem::pluginOffset_t pluginOff, RwTypeSystem::pluginDescriptor pluginId, EngineInterface *rwEngine ) override
         {
             typePluginDescriptor desc( this->typeName );
-            void *dstLangobj = RwTypeSystem::GetObjectFromTypeStruct( dstRtobj );
-            const void *srcLangobj = RwTypeSystem::GetConstObjectFromTypeStruct( srcRtobj );
+            void *dstLangobj = GetObjectFromTypeStruct( dstRtobj );
+            const void *srcLangobj = GetConstObjectFromTypeStruct( srcRtobj );
 
             return this->wrapped->OnPluginAssign( dstLangobj, srcLangobj, pluginOff, desc, rwEngine );
         }

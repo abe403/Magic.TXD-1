@@ -36,7 +36,7 @@ TexDictionary* texDictionaryStreamPlugin::CreateTexDictionary( EngineInterface *
         return nullptr;
     }
 
-    TexDictionary *txdObj = (TexDictionary*)RwTypeSystem::GetObjectFromTypeStruct( rttiObj );
+    TexDictionary *txdObj = (TexDictionary*)GetObjectFromTypeStruct( rttiObj );
 
     return txdObj;
 }

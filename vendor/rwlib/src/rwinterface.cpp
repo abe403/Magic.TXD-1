@@ -49,8 +49,6 @@ struct rw_afterinit_t
 {
     inline void Initialize( EngineInterface *engine )
     {
-        engine->typeSystem.InitializeLockProvider();
-
         // Register the main RenderWare types.
         {
             engine->streamTypeInfo = engine->typeSystem.RegisterAbstractType <Stream> ( "stream" );
@@ -76,13 +74,11 @@ struct rw_afterinit_t
 static optional_struct_space <PluginDependantStructRegister <rw_afterinit_t, RwInterfaceFactory_t>> rw_afterinit_reg;
 
 EngineInterface::EngineInterface( void ) :
+    typeSystem( std::tuple( this ) ),
     applicationName( eir::constr_with_alloc::DEFAULT, this ),
     applicationVersion( eir::constr_with_alloc::DEFAULT, this ),
     applicationDescription( eir::constr_with_alloc::DEFAULT, this )
 {
-    // Set up the type system.
-    this->typeSystem.lockProvider.engineInterface = this;
-
     // Remember to wait with type creation until the threading environment has registered!
     this->rwobjTypeInfo = nullptr;
     this->streamTypeInfo = nullptr;
@@ -342,7 +338,7 @@ RwObject* Interface::ConstructRwObject( const char *typeName )
             if ( rtObj )
             {
                 // We are successful! Return the new object.
-                newObj = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( rtObj );
+                newObj = (RwObject*)GetObjectFromTypeStruct( rtObj );
             }
         }
     }
@@ -365,7 +361,7 @@ RwObject* Interface::CloneRwObject( const RwObject *srcObj )
 
         if ( newRtObj )
         {
-            newObj = (RwObject*)RwTypeSystem::GetObjectFromTypeStruct( newRtObj );
+            newObj = (RwObject*)GetObjectFromTypeStruct( newRtObj );
         }
     }
 
