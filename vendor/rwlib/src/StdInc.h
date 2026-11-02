@@ -98,7 +98,7 @@ private:
     DEFINE_HEAP_REDIR_ALLOC_IMPL( dtsRedirAlloc );
 
 public:
-    typedef DynamicTypeSystem <dtsRedirAlloc, EngineInterface, typeSystemLockProvider, cachedMinimalStructRegistryFlavor, rwEirExceptionManager> RwTypeSystem;
+    typedef DynamicTypeSystem <dtsRedirAlloc, EngineInterface, typeSystemLockProvider, cachedMinimalStructRegistryFlavor <GenericRTTI>, rwEirExceptionManager> RwTypeSystem;
 
     RwTypeSystem typeSystem;
 
