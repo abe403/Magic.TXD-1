@@ -639,7 +639,7 @@ struct streamCustomTypeInterface : public RwTypeSystem::typeInterface
         throw InvalidOperationException( eSubsystemType::STREAM, eOperationType::COPY_CONSTRUCT, L"STREAM_CUSTOM_FRIENDLYNAME" );
     }
 
-    void Destruct( void *mem ) const override
+    void Destruct( void *mem ) const noexcept override
     {
         // First delete the meta struct.
         {
@@ -652,24 +652,24 @@ struct streamCustomTypeInterface : public RwTypeSystem::typeInterface
         ( (CustomStream*)mem )->~CustomStream();
     }
 
-    size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const override final
+    size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const noexcept override final
     {
         return CalculateAlignedTypeSizeWithHeader( sizeof(CustomStream), this->objCustomBufferSize, this->objCustomBufferAlignment );
     }
 
-    size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *mem ) const override final
+    size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *mem ) const noexcept override final
     {
         return this->GetTypeSize( engineInterface, nullptr );
     }
 
-    size_t GetTypeAlignment( EngineInterface *engineInterface, void *construct_params ) const override final
+    size_t GetTypeAlignment( EngineInterface *engineInterface ) const noexcept override final
     {
         return CalculateAlignmentForObjectWithHeader( alignof(CustomStream), this->objCustomBufferAlignment );
     }
 
-    size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *mem ) const override final
+    size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *mem ) const noexcept
     {
-        return this->GetTypeAlignment( engineInterface, nullptr );
+        return this->GetTypeAlignment( engineInterface );
     }
 
     size_t objCustomBufferSize;

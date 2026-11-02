@@ -636,27 +636,27 @@ struct nativeTextureStreamPlugin : public serializationProvider
             this->texTypeProvider->CopyConstructTexture( this->engineInterface, mem, srcMem, this->actualObjSize );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             this->texTypeProvider->DestroyTexture( this->engineInterface, mem, this->actualObjSize );
         }
 
-        size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const override
+        size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const noexcept override
         {
             return this->actualObjSize;
         }
 
-        size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *objMem ) const override
+        size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *objMem ) const noexcept override
         {
             return this->actualObjSize;
         }
 
-        size_t GetTypeAlignment( EngineInterface *engineInterface, void *construct_params ) const override
+        size_t GetTypeAlignment( EngineInterface *engineInterface ) const noexcept override
         {
             return this->actualObjAlignment;
         }
 
-        size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *objMem ) const override
+        size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *objMem ) const noexcept
         {
             return this->actualObjAlignment;
         }

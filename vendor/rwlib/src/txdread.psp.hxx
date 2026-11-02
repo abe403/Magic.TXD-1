@@ -297,7 +297,7 @@ struct NativeTexturePSP
 
         inline GETexture( const GETexture& right ) = delete;
 
-        inline GETexture( GETexture&& right )
+        inline GETexture( GETexture&& right ) noexcept
         {
             this->width = right.width;
             this->height = right.height;
@@ -315,7 +315,7 @@ struct NativeTexturePSP
         }
 
         // Required by eir::Vector for error-recovery.
-        inline GETexture& operator = ( GETexture&& right )
+        inline GETexture& operator = ( GETexture&& right ) noexcept
         {
             this->width = right.width;
             this->height = right.height;

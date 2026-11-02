@@ -137,23 +137,23 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
         { \
             driverType->driverImpl->On##canonicalName##CopyConstruct( driverType->engineInterface, mem, srcMem, this->objMemSize ); \
         } \
-        void Destruct( void *mem ) const override \
+        void Destruct( void *mem ) const noexcept override \
         { \
             driverType->driverImpl->On##canonicalName##Destroy( driverType->engineInterface, mem, this->objMemSize ); \
         } \
-        size_t GetTypeSize( EngineInterface *engineInterface, void *construction_params ) const override \
+        size_t GetTypeSize( EngineInterface *engineInterface, void *construction_params ) const noexcept override \
         { \
             return this->objMemSize; \
         } \
-        size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *objMem ) const override \
+        size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *objMem ) const noexcept override \
         { \
             return this->objMemSize; \
         } \
-        size_t GetTypeAlignment( EngineInterface *engineInterface, void *cosntruction_params ) const override \
+        size_t GetTypeAlignment( EngineInterface *engineInterface ) const noexcept override \
         { \
             return this->objMemAlignment; \
         } \
-        size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *objMem ) const override \
+        size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *objMem ) const noexcept \
         { \
             return this->objMemAlignment; \
         } \
@@ -178,24 +178,24 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
     template <typename headerStructType>
     struct customTypeInterfaceWithHeader : public RwTypeSystem::typeInterface
     {
-        size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const override final
+        size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const noexcept override final
         {
             return CalculateAlignedTypeSizeWithHeader( sizeof(headerStructType), this->objMemSize, this->objMemAlignment );
         }
 
-        size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *objMem ) const override final
+        size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *objMem ) const noexcept override final
         {
             return this->GetTypeSize( engineInterface, nullptr );
         }
 
-        size_t GetTypeAlignment( EngineInterface *engineInterface, void *construct_params ) const override final
+        size_t GetTypeAlignment( EngineInterface *engineInterface ) const noexcept override final
         {
             return CalculateAlignmentForObjectWithHeader( alignof(headerStructType), this->objMemAlignment );
         }
 
-        size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *objMem ) const override final
+        size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *objMem ) const noexcept
         {
-            return this->GetTypeAlignment( engineInterface, nullptr );
+            return this->GetTypeAlignment( engineInterface );
         }
 
         size_t objMemSize;
@@ -239,7 +239,7 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
             throw InvalidOperationException( eSubsystemType::DRIVER, eOperationType::COPY_CONSTRUCT, L"DRIVER_SWAPCHAIN_FRIENDLYNAME" );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             DriverSwapChain *swapChain = (DriverSwapChain*)mem;
 
@@ -298,7 +298,7 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
             throw InvalidOperationException( eSubsystemType::DRIVER, eOperationType::COPY_CONSTRUCT, L"DRIVER_PSO_FRIENDLYNAME" );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             DriverGraphicsState *psoObj = (DriverGraphicsState*)mem;
 
@@ -349,7 +349,7 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
             throw InvalidOperationException( eSubsystemType::DRIVER, eOperationType::COPY_CONSTRUCT, L"DRIVER_CMDBUF_FRIENDLYNAME" );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             DriverCmdBuffer *cmdBuf = (DriverCmdBuffer*)mem;
 
@@ -402,7 +402,7 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
             throw InvalidOperationException( eSubsystemType::DRIVER, eOperationType::COPY_CONSTRUCT, L"DRIVER_CMDALLOC_FRIENDLYNAME" );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             DriverCmdAlloc *cmdAlloc = (DriverCmdAlloc*)mem;
 
@@ -456,7 +456,7 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
             throw InvalidOperationException( eSubsystemType::DRIVER, eOperationType::COPY_CONSTRUCT, L"DRIVER_CMDQUEUE_FRIENDLYNAME" );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             DriverCmdQueue *cmdQueue = (DriverCmdQueue*)mem;
 
@@ -508,7 +508,7 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
             throw InvalidOperationException( eSubsystemType::DRIVER, eOperationType::COPY_CONSTRUCT, L"DRIVER_FENCE_FRIENDLYNAME" );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             DriverFence *fence = (DriverFence*)mem;
 
@@ -568,7 +568,7 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
             throw InvalidOperationException( eSubsystemType::DRIVER, eOperationType::COPY_CONSTRUCT, L"DRIVER_MEM_FRIENDLYNAME" );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             DriverMemory *natMem = (DriverMemory*)mem;
 
@@ -608,7 +608,7 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
         );
     }
 
-    void Destruct( void *mem ) const override
+    void Destruct( void *mem ) const noexcept override
     {
         // First destroy the implementation.
         Driver *theDriver = (Driver*)mem;
@@ -622,24 +622,24 @@ struct nativeDriverTypeInterface final : public RwTypeSystem::typeInterface
         theDriver->~Driver();
     }
 
-    size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const override final
+    size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const noexcept override final
     {
         return CalculateAlignedTypeSizeWithHeader( sizeof(Driver), this->driverMemSize, this->driverMemAlignment );
     }
 
-    size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *objMem ) const override final
+    size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *objMem ) const noexcept override final
     {
         return this->GetTypeSize( engineInterface, nullptr );
     }
 
-    size_t GetTypeAlignment( EngineInterface *engineInterface, void *construct_params ) const override final
+    size_t GetTypeAlignment( EngineInterface *engineInterface ) const noexcept override final
     {
         return CalculateAlignmentForObjectWithHeader( alignof(Driver), this->driverMemAlignment );
     }
 
-    size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *objMem ) const override final
+    size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *objMem ) const noexcept
     {
-        return this->GetTypeAlignment( engineInterface, nullptr );
+        return this->GetTypeAlignment( engineInterface );
     }
 
     EngineInterface *engineInterface;

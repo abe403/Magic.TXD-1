@@ -56,17 +56,17 @@ interfacePluginOffset_t RegisterInterfacePlugin( size_t pluginSize, size_t plugi
             return this->wrapped->OnPluginConstruct( engine, off, interfacePluginDescriptor() );
         }
         
-        void OnPluginDestruct( EngineInterface *engine, RwInterfacePluginOffset_t off, RwInterfaceFactory_t::pluginDescriptor desc ) override
+        void OnPluginDestruct( EngineInterface *engine, RwInterfacePluginOffset_t off, RwInterfaceFactory_t::pluginDescriptor desc ) noexcept override
         {
             this->wrapped->OnPluginDestruct( engine, off, interfacePluginDescriptor() );
         }
         
-        bool OnPluginAssign( EngineInterface *dstEngine, const EngineInterface *srcEngine, RwInterfacePluginOffset_t off, RwInterfaceFactory_t::pluginDescriptor desc ) override
+        bool OnPluginCopyAssign( EngineInterface *dstEngine, const EngineInterface *srcEngine, RwInterfacePluginOffset_t off, RwInterfaceFactory_t::pluginDescriptor desc ) override
         {
             return this->wrapped->OnPluginAssign( dstEngine, srcEngine, off, interfacePluginDescriptor() );
         }
 
-        void DeleteOnUnregister( void ) override
+        void DeleteOnUnregister( void ) noexcept override
         {
             eir::static_del_struct <wrapperInterfaceType, RwStaticMemAllocator> ( nullptr, this );
         }

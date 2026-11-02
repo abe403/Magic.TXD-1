@@ -284,7 +284,8 @@ struct d3d12DriverInterface : public nativeDriverImplementation
 
     void OnDriverCopyConstruct( Interface *engineInterface, void *driverObjMem, const void *srcDriverObjMem, size_t driverMemSize ) override
     {
-        d3d12DriverFactory.ClonePlacement( driverObjMem, (const d3d12NativeDriver*)srcDriverObjMem );
+        // d3d12NativeDriver is not copy-constructible; driver cloning is unsupported.
+        throw UnsupportedOperationException( eSubsystemType::DRIVER, eOperationType::COPY_CONSTRUCT, nullptr );
     }
 
     void OnDriverDestroy( Interface *engineInterface, void *driverObjMem, size_t driverMemSize ) override

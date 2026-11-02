@@ -85,10 +85,10 @@ private:
     template <typename charType>
     static inline bool IsName(charType c)
     {
-	    if ( ( c >= 'a' && c <= 'z' ) || ( c >= 'A' && c <= 'Z' ) || c == (unsigned char)'ß' || c == (unsigned char)'_' || c > 256 ||
-             c == (unsigned char)'ä' || c == (unsigned char)'Ä' ||
-             c == (unsigned char)'ö' || c == (unsigned char)'Ö' ||
-             c == (unsigned char)'ü' || c == (unsigned char)'Ü' )
+	    if ( ( c >= 'a' && c <= 'z' ) || ( c >= 'A' && c <= 'Z' ) || c == (unsigned char)'\xDF' || c == (unsigned char)'_' || c > 256 ||
+             c == (unsigned char)'\xE4' || c == (unsigned char)'\xC4' ||
+             c == (unsigned char)'\xF6' || c == (unsigned char)'\xD6' ||
+             c == (unsigned char)'\xFC' || c == (unsigned char)'\xDC' )
         {
 		    return true;
 	    }

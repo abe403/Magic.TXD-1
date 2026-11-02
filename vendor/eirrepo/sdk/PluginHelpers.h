@@ -441,35 +441,35 @@ private:
             factPtr->ClonePlacement( mem, (const hostType_t*)srcMem );
         }
 
-        void Destruct( void *mem ) const override
+        void Destruct( void *mem ) const noexcept override
         {
             factoryType *factPtr = factPipelineType::getFactory( sysPtr );
 
             factPtr->DestroyPlacement( (hostType_t*)mem );
         }
 
-        size_t GetTypeSize( systemPointer_t *sysPtr, void *constr_params ) const override
+        size_t GetTypeSize( systemPointer_t *sysPtr, void *constr_params ) const noexcept override
         {
             factoryType *factPtr = factPipelineType::getFactory( sysPtr );
 
             return factPtr->GetClassSize();
         }
 
-        size_t GetTypeSizeByObject( systemPointer_t *sysPtr, const void *mem ) const override
+        size_t GetTypeSizeByObject( systemPointer_t *sysPtr, const void *mem ) const noexcept override
         {
             factoryType *factPtr = factPipelineType::getFactory( sysPtr );
 
             return factPtr->GetClassSize();
         }
 
-        size_t GetTypeAlignment( systemPointer_t *sysPtr, void *constr_params ) const override
+        size_t GetTypeAlignment( systemPointer_t *sysPtr ) const noexcept override
         {
             factoryType *factPtr = factPipelineType::getFactory( sysPtr );
 
             return factPtr->GetClassAlignment();
         }
 
-        size_t GetTypeAlignmentByObject( systemPointer_t *sysPtr, const void *mem ) const override
+        size_t GetTypeAlignmentByObject( systemPointer_t *sysPtr, const void *mem ) const noexcept
         {
             factoryType *factPtr = factPipelineType::getFactory( sysPtr );
 

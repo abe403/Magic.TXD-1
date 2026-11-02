@@ -147,7 +147,7 @@ struct nativeImageTypeInterface : public RwTypeSystem::typeInterface
         }
     }
 
-    void Destruct( void *mem ) const override
+    void Destruct( void *mem ) const noexcept override
     {
         EngineInterface *engineInterface = this->engineInterface;
 
@@ -169,7 +169,7 @@ struct nativeImageTypeInterface : public RwTypeSystem::typeInterface
         imgEnv->nativeImgFact.DestroyPlacement( natImg );
     }
 
-    size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const override final
+    size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const noexcept override final
     {
         const nativeImageEnv *imgEnv = nativeImageEnvRegister.get().GetConstPluginStruct( engineInterface );
 
@@ -181,21 +181,21 @@ struct nativeImageTypeInterface : public RwTypeSystem::typeInterface
         return totalSize;
     }
 
-    size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *mem ) const override final
+    size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *mem ) const noexcept override final
     {
         return this->GetTypeSize( engineInterface, nullptr );
     }
 
-    size_t GetTypeAlignment( EngineInterface *engineInterface, void *construct_params ) const override final
+    size_t GetTypeAlignment( EngineInterface *engineInterface ) const noexcept override final
     {
         const nativeImageEnv *imgEnv = nativeImageEnvRegister.get().GetConstPluginStruct( engineInterface );
 
         return CalculateAlignmentForObjectWithHeader( this->objAlignment, imgEnv->nativeImgFact.GetClassAlignment() );
     }
 
-    size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *mem ) const override final
+    size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *mem ) const noexcept
     {
-        return this->GetTypeAlignment( engineInterface, nullptr );
+        return this->GetTypeAlignment( engineInterface );
     }
 
     EngineInterface *engineInterface;

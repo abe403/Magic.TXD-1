@@ -1309,6 +1309,72 @@ public:
         return ConstructPlacementEx( memPtr, std::tuple(), std::forward <constrArgs> ( args )... );
     }
 
+    // Compatibility with the older API used by the bundled rwlib: constructs the language object
+    // through a constructor object that provides "classType* Construct( void *mem ) const".
+    template <typename constructorType>
+        requires ( requires ( const constructorType& c, void *m ) { { c.Construct( m ) }; } )
+    inline classType* ConstructPlacementEx( void *classMem, const constructorType& constructor, constrArgs&&... args )
+    {
+        classType *intermediateClassObject = nullptr;
+
+        try
+        {
+            intermediateClassObject = constructor.Construct( classMem );
+        }
+        catch( ... )
+        {
+            // The base object failed to construct, so terminate here.
+            intermediateClassObject = nullptr;
+        }
+
+        if ( intermediateClassObject == nullptr )
+        {
+            return nullptr;
+        }
+
+        bool pluginConstructionSuccessful = structRegistry.ConstructPluginBlock( intermediateClassObject, std::forward <constrArgs> ( args )... );
+
+        if ( !pluginConstructionSuccessful )
+        {
+            intermediateClassObject->~classType();
+            return nullptr;
+        }
+
+        this->data.aliveClasses++;
+
+        return intermediateClassObject;
+    }
+
+    // Compatibility with the older API used by the bundled rwlib.
+    template <eir::MemoryAllocator subAllocatorType, typename constructorType>
+        requires ( requires ( const constructorType& c, void *m ) { { c.Construct( m ) }; } )
+    inline classType* ConstructTemplate( subAllocatorType& memAllocator, const constructorType& constructor, constrArgs&&... args )
+    {
+        const size_t wholeClassSize = this->GetClassSize();
+        const size_t requiredAlignment = this->GetClassAlignment();
+
+        void *classMem = memAllocator.Allocate( this, wholeClassSize, requiredAlignment );
+
+        if ( !classMem )
+            return nullptr;
+
+        classType *resultObj = this->ConstructPlacementEx( classMem, constructor, std::forward <constrArgs> ( args )... );
+
+        if ( !resultObj )
+        {
+            memAllocator.Free( this, classMem );
+        }
+
+        return resultObj;
+    }
+
+    // Compatibility with the older API used by the bundled rwlib.
+    inline bool Assign( classType *dstObj, const classType *srcObj )
+        requires ( std::is_copy_assignable <classType>::value )
+    {
+        return CopyAssign( dstObj, srcObj );
+    }
+
     // Performs copy-assignment of both the language object as well as the plugin blocks.
     inline bool CopyAssign( classType *dstObj, const classType *srcObj )
         requires ( std::is_copy_assignable <classType>::value )

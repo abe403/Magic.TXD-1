@@ -303,12 +303,23 @@ public:
         // Methods for dynamic non-RTTI lifetime management.
         virtual void Construct( void *mem, systemPointer_t *sysPtr, void *construct_params ) const = 0;
         virtual void CopyConstruct( void *mem, const void *srcMem ) const = 0;
-        virtual void MoveConstruct( void *mem, void *srcMem ) const = 0;
+        // Move/assign default to "unsupported" so that type interfaces written against the
+        // older API (as used by the bundled rwlib) keep working.
+        virtual void MoveConstruct( void *mem, void *srcMem ) const
+        {
+            exceptMan::throw_undefined_method( eir::eMethodType::MOVE_CONSTRUCTOR );
+        }
         virtual void Destruct( void *mem ) const noexcept = 0;
 
         // Methods for data assignment, in case of dynamic non-RTTI operation.
-        virtual void CopyAssign( void *mem, const void *srcMem ) const = 0;
-        virtual void MoveAssign( void *mem, void *srcMem ) const = 0;
+        virtual void CopyAssign( void *mem, const void *srcMem ) const
+        {
+            exceptMan::throw_undefined_method( eir::eMethodType::COPY_ASSIGNMENT );
+        }
+        virtual void MoveAssign( void *mem, void *srcMem ) const
+        {
+            exceptMan::throw_undefined_method( eir::eMethodType::MOVE_ASSIGNMENT );
+        }
 
         // The type size of objects is assumed to be an IMMUTABLE property.
         // Changing the type size of an object leads to undefined behavior.
@@ -445,7 +456,8 @@ public:
         // Takes care of any destruction, even of this class itself.
         virtual void Cleanup( void ) noexcept = 0;
 
-    private:
+    public:
+        // Kept public: the bundled rwlib accesses name, tInterface and inheritsFrom directly.
         DynamicTypeSystem *typeSys;
 
         const char *name;   // name of this type

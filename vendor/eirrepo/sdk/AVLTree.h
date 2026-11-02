@@ -79,7 +79,7 @@ template <typename dispatcherType>
 concept AVLNodeDispatcher =
     std::is_invocable_r <eir::eCompResult, decltype(dispatcherType::CompareNodes), const AVLNode*, const AVLNode*>::value;
 
-template <AVLNodeDispatcher dispatcherType, bool nodestackInsertOrAppend = true>
+template <typename dispatcherType, bool nodestackInsertOrAppend = true>
 struct AVLTree
 {
     // This class is NOT THREAD-SAFE.

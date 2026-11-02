@@ -45,7 +45,7 @@ struct rwConfigDispatchEnv
             return ( cfgBlock != nullptr );
         }
 
-        void OnPluginDestruct( CExecThread *theThread, threadPluginOffset pluginOffset, threadPluginDescriptor pluginId ) override
+        void OnPluginDestruct( CExecThread *theThread, threadPluginOffset pluginOffset, threadPluginDescriptor pluginId ) noexcept override
         {
             rwConfigBlock *cfgBlock = (rwConfigBlock*)theThread->ResolvePluginMemory( pluginOffset );
             
@@ -55,12 +55,17 @@ struct rwConfigDispatchEnv
             cfgEnv->configFactory.DestroyPlacement( cfgBlock );
         }
 
-        bool OnPluginAssign( CExecThread *dstThread, const CExecThread *srcThread, threadPluginOffset pluginOffset, threadPluginDescriptor pluginId ) override
+        bool OnPluginCopyAssign( CExecThread *dstThread, const CExecThread *srcThread, threadPluginOffset pluginOffset, threadPluginDescriptor pluginId ) override
         {
             rwConfigBlock *dstBlock = (rwConfigBlock*)dstThread->ResolvePluginMemory( pluginOffset );
             const rwConfigBlock *srcBlock = (const rwConfigBlock*)srcThread->ResolvePluginMemory( pluginOffset );
 
             return cfgEnv->configFactory.Assign( dstBlock, srcBlock );
+        }
+
+        bool OnPluginMoveAssign( CExecThread *dstThread, CExecThread *srcThread, threadPluginOffset pluginOffset, threadPluginDescriptor pluginId ) override
+        {
+            return this->OnPluginCopyAssign( dstThread, srcThread, pluginOffset, pluginId );
         }
 
         EngineInterface *engineInterface;

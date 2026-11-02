@@ -107,7 +107,7 @@ struct customNativeProgramTypeInterface final : public RwTypeSystem::typeInterfa
         }
     }
 
-    void Destruct( void *mem ) const override
+    void Destruct( void *mem ) const noexcept override
     {
         driverProgramHandle *natProg = (driverProgramHandle*)mem;
 
@@ -116,24 +116,24 @@ struct customNativeProgramTypeInterface final : public RwTypeSystem::typeInterfa
         natProg->~driverProgramHandle();
     }
 
-    size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const override final
+    size_t GetTypeSize( EngineInterface *engineInterface, void *construct_params ) const noexcept override final
     {
         return CalculateAlignedTypeSizeWithHeader( sizeof(driverProgramHandle), this->programSize, this->programAlignment );
     }
 
-    size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *mem ) const override final
+    size_t GetTypeSizeByObject( EngineInterface *engineInterface, const void *mem ) const noexcept override final
     {
         return this->GetTypeSize( engineInterface, nullptr );
     }
 
-    size_t GetTypeAlignment( EngineInterface *engineInterface, void *construct_params ) const override final
+    size_t GetTypeAlignment( EngineInterface *engineInterface ) const noexcept override final
     {
         return CalculateAlignmentForObjectWithHeader( alignof(driverProgramHandle), this->programAlignment );
     }
 
-    size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *mem ) const override final
+    size_t GetTypeAlignmentByObject( EngineInterface *engineInterface, const void *mem ) const noexcept
     {
-        return this->GetTypeAlignment( engineInterface, nullptr );
+        return this->GetTypeAlignment( engineInterface );
     }
 
     size_t programSize;
