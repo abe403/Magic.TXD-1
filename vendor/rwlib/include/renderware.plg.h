@@ -80,9 +80,14 @@ struct typePluginInterface
         return;
     }
 
-    virtual bool OnPluginAssign( void *dstObj, const void *srcObj, typePluginOffset_t pluginOffset, typePluginDescriptor pluginId, Interface *rwEngine )
+    virtual bool OnPluginCopyAssign( void *dstObj, const void *srcObj, typePluginOffset_t pluginOffset, typePluginDescriptor pluginId, Interface *rwEngine )
     {
         // Assignment of data to another plugin struct is optional.
+        return false;
+    }
+
+    virtual bool OnPluginMoveAssign( void *dstObj, void *srcObj, typePluginOffset_t pluginOffset, typePluginDescriptor pluginId, Interface *rwEngine )
+    {
         return false;
     }
 
@@ -336,9 +341,14 @@ struct interfacePluginInterface
         return;
     }
 
-    virtual bool OnPluginAssign( Interface *dstEngine, const Interface *srcEngine, interfacePluginOffset_t pluginOffset, interfacePluginDescriptor pluginId )
+    virtual bool OnPluginCopyAssign( Interface *dstEngine, const Interface *srcEngine, interfacePluginOffset_t pluginOffset, interfacePluginDescriptor pluginId )
     {
         // Assignment of data to another plugin struct is optional.
+        return false;
+    }
+
+    virtual bool OnPluginMoveAssign( Interface *dstEngine, Interface *srcEngine, interfacePluginOffset_t pluginOffset, interfacePluginDescriptor pluginId )
+    {
         return false;
     }
 

@@ -49,6 +49,9 @@ struct rw_afterinit_t
 {
     inline void Initialize( EngineInterface *engine )
     {
+        // The threading environment is up now, so the type system may create its locks.
+        engine->typeSystem.InitializeLockProvider();
+
         // Register the main RenderWare types.
         {
             engine->streamTypeInfo = engine->typeSystem.RegisterAbstractType <Stream> ( "stream" );

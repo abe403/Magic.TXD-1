@@ -160,6 +160,21 @@ public:
     {
         this->mainLock = this->lockProvider.CreateLock();
     }
+    // Compatibility with the older API used by the bundled rwlib: the main lock can only be
+    // created once the threading environment is available, so creation is deferred to here.
+    inline void InitializeLockProvider( void )
+    {
+        if constexpr ( requires ( lockProvider_t& lp ) { lp.EnableLockCreation(); } )
+        {
+            this->lockProvider.EnableLockCreation();
+        }
+
+        if ( this->mainLock == nullptr )
+        {
+            this->mainLock = this->lockProvider.CreateLock();
+        }
+    }
+
     inline DynamicTypeSystem( void ) noexcept requires ( eir::nothrow_constructible_from <lockProvider_t> && eir::nothrow_constructible_from <allocatorType> )
         : DynamicTypeSystem( std::tuple(), std::tuple() )
     {

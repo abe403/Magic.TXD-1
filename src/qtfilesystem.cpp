@@ -50,7 +50,7 @@ struct FileSystemQtFileEngineIterator final : public QAbstractFileEngineIterator
 
     QString currentFileName( void ) const override
     {
-        if ( this->entryIndex >= this->filenames.size() )
+        if ( this->entryIndex < 0 || this->entryIndex >= this->filenames.size() )
         {
             return QString();
         }
@@ -59,7 +59,7 @@ struct FileSystemQtFileEngineIterator final : public QAbstractFileEngineIterator
     }
 
 private:
-    int entryIndex = 0;
+    int entryIndex = -1;    // before the first entry; next() advances to it (QAbstractFileEngineIterator contract)
     QStringList filenames;
 };
 

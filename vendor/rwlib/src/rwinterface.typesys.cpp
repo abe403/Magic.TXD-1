@@ -139,7 +139,7 @@ typePluginOffset_t RegisterTypePlugin( Interface *rwEngine, const char *typeName
             void *dstLangobj = GetObjectFromTypeStruct( dstRtobj );
             const void *srcLangobj = GetConstObjectFromTypeStruct( srcRtobj );
 
-            return this->wrapped->OnPluginAssign( dstLangobj, srcLangobj, pluginOff, desc, rwEngine );
+            return this->wrapped->OnPluginCopyAssign( dstLangobj, srcLangobj, pluginOff, desc, rwEngine );
         }
 
         void DeleteOnUnregister( void ) noexcept override

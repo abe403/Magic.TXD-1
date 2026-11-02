@@ -68,13 +68,26 @@ struct EngineInterface : public Interface
         {
         }
 
+        // Locks cannot be created before the threading environment has registered,
+        // so lock creation stays disabled until the type system's InitializeLockProvider().
+        inline void EnableLockCreation( void ) noexcept
+        {
+            this->canCreateLocks = true;
+        }
+
         inline rwlock* CreateLock( void )
         {
+            if ( !this->canCreateLocks )
+                return nullptr;
+
             return CreateUnfairMutex( engineInterface );
         }
 
         inline void CloseLock( rwlock *theLock )
         {
+            if ( theLock == nullptr )
+                return;
+
             CloseUnfairMutex( engineInterface, theLock );
         }
 
@@ -99,6 +112,7 @@ struct EngineInterface : public Interface
         }
 
         EngineInterface *engineInterface = nullptr;
+        bool canCreateLocks = false;
     };
 
 private:

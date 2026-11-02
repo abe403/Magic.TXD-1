@@ -4,6 +4,9 @@
     <NATEXEC_DISABLE_NATIVE_IMPL>false</NATEXEC_DISABLE_NATIVE_IMPL>
     <NATEXEC_FIRST_ENTRY_POINT>true</NATEXEC_FIRST_ENTRY_POINT>
     <NATEXEC_GLOBALMEM_OVERRIDE>true</NATEXEC_GLOBALMEM_OVERRIDE>
+    <!-- With a dynamically linked (system) Qt, Qt DLLs allocate std:: objects with the CRT heap that the
+         application later frees, so the global new/delete overrides must stay off. -->
+    <NATEXEC_GLOBALMEM_OVERRIDE Condition="'$(MGTXD_WIN32_SYSTEM_QT)'=='true'">false</NATEXEC_GLOBALMEM_OVERRIDE>
     <NATEXEC_LOG_GLOBAL_ALLOC>false</NATEXEC_LOG_GLOBAL_ALLOC>
     <NATEXEC_EXCEPTION_COPYPUSH>false</NATEXEC_EXCEPTION_COPYPUSH>
     <NATEXEC_NO_HEAPPTR_VERIFY>true</NATEXEC_NO_HEAPPTR_VERIFY>

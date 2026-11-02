@@ -196,7 +196,7 @@ public:
         }
 
         inline filePattern_t( const filePattern_t& ) = delete;
-        inline filePattern_t( filePattern_t&& right ) : commands( std::move( right.commands ) )
+        inline filePattern_t( filePattern_t&& right ) noexcept : commands( std::move( right.commands ) )
         {
             this->manager = right.manager;
         }
@@ -213,7 +213,7 @@ public:
         }
 
         inline filePattern_t& operator = ( const filePattern_t& ) = delete;
-        inline filePattern_t& operator = ( filePattern_t&& right )
+        inline filePattern_t& operator = ( filePattern_t&& right ) noexcept
         {
             this->manager = right.manager;
             this->commands = std::move( right.commands );

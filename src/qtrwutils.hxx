@@ -53,27 +53,28 @@ inline QPixmap convertRWBitmapToQPixmap( NativeExecutive::CExecutiveManager *exe
     );
 }
 
+// Weighted container node for PlatformImportanceSort (kept at namespace scope: MSVC 14.44 overflows
+// its stack checking the Set comparator concepts on a function-local struct).
+struct platformImportanceWeightedNode
+{
+    double weight;
+    rw::rwStaticString <char> platName;
+
+    inline static eir::eCompResult compare_values( const platformImportanceWeightedNode& left, const platformImportanceWeightedNode& right )
+    {
+        if ( left.weight > right.weight )
+        {
+            return eir::eCompResult::LEFT_LESS;
+        }
+
+        return eir::flip_comp_result( FixedStringCompare( left.platName.GetConstString(), left.platName.GetLength(), right.platName.GetConstString(), right.platName.GetLength(), true ) );
+    }
+};
+
 // Returns a sorted list of TXD platform names by importance.
 template <typename stringListType>
 inline rw::rwStaticVector <rw::rwStaticString <char>> PlatformImportanceSort( MainWindow *mainWnd, const stringListType& platformNames )
 {
-    // Set up a weighted container of platform strings.
-    struct weightedNode
-    {
-        double weight;
-        rw::rwStaticString <char> platName;
-
-        inline static eir::eCompResult compare_values( const weightedNode& left, const weightedNode& right )
-        {
-            if ( left.weight > right.weight )
-            {
-                return eir::eCompResult::LEFT_LESS;
-            }
-
-            return eir::flip_comp_result( FixedStringCompare( left.platName.GetConstString(), left.platName.GetLength(), right.platName.GetConstString(), right.platName.GetLength(), true ) );
-        }
-    };
-
     size_t platCount = platformNames.GetCount();
 
     // Cache some things we are going to need.
@@ -91,14 +92,14 @@ inline rw::rwStaticVector <rw::rwStaticString <char>> PlatformImportanceSort( Ma
     }
 
     // The result container.
-    rw::rwStaticSet <weightedNode, weightedNode> nodeContainer;
+    rw::rwStaticSet <platformImportanceWeightedNode, platformImportanceWeightedNode> nodeContainer;
 
     // Process all platforms and store their rating.
     for ( size_t n = 0; n < platCount; n++ )
     {
         const rw::rwStaticString <char>& name = platformNames[ n ];
 
-        weightedNode platNode;
+        platformImportanceWeightedNode platNode;
         platNode.platName = name;
         platNode.weight = 0;
 
@@ -141,7 +142,7 @@ inline rw::rwStaticVector <rw::rwStaticString <char>> PlatformImportanceSort( Ma
 
         for ( typename decltype(nodeContainer)::iterator iter( nodeContainer ); !iter.IsEnd(); iter.Increment(), n++ )
         {
-            const weightedNode& curItem = iter.Resolve()->GetValue();
+            const platformImportanceWeightedNode& curItem = iter.Resolve()->GetValue();
 
             sortedResult.AddToBack( std::move( curItem.platName ) );
         }

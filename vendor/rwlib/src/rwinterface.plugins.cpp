@@ -63,7 +63,7 @@ interfacePluginOffset_t RegisterInterfacePlugin( size_t pluginSize, size_t plugi
         
         bool OnPluginCopyAssign( EngineInterface *dstEngine, const EngineInterface *srcEngine, RwInterfacePluginOffset_t off, RwInterfaceFactory_t::pluginDescriptor desc ) override
         {
-            return this->wrapped->OnPluginAssign( dstEngine, srcEngine, off, interfacePluginDescriptor() );
+            return this->wrapped->OnPluginCopyAssign( dstEngine, srcEngine, off, interfacePluginDescriptor() );
         }
 
         void DeleteOnUnregister( void ) noexcept override
